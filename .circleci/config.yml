@@ -3,7 +3,7 @@ version: 2.1
 executors:
   docker-executor:
     docker:
-      - image: circleci/python:3.8-node-18-docker  # This image comes with Python, Node.js 18, and Docker
+      - image: circleci/python:3.8
     working_directory: ~/repo
 
 jobs:
@@ -13,6 +13,13 @@ jobs:
       - checkout  # Checkout the code from the repository
       - setup_remote_docker:
           docker_layer_caching: true  # Enable Docker layer caching for faster builds
+
+      - run:
+          name: Install Node.js 18
+          command: |
+            curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+            apt-get install -y nodejs \
+            && apt-get clean
 
       # Log into Docker Hub
       - run:
