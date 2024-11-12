@@ -3,7 +3,7 @@ version: 2.1
 executors:
   docker-executor:
     docker:
-      - image: node:18  # Node.js 18 image (includes npm)
+      - image: circleci/python:3.8-node-18-docker  # This image comes with Python, Node.js 18, and Docker
     working_directory: ~/repo
 
 jobs:
