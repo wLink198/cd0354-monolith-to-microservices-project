@@ -14,13 +14,6 @@ jobs:
       - setup_remote_docker:
           docker_layer_caching: true  # Enable Docker layer caching for faster builds
 
-      - run:
-          name: Install Node.js 18
-          command: |
-            curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
-            apt-get install -y nodejs \
-            && apt-get clean
-
       # Log into Docker Hub
       - run:
           name: Log into Docker Hub
