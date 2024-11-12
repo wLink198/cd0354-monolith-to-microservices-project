@@ -45,6 +45,11 @@ jobs:
             docker tag udagram-api-feed "$DOCKER_USERNAME/udagram-api-feed:v1"
             docker push "$DOCKER_USERNAME/udagram-api-feed:v1"
 
+      # Set NODE_OPTIONS to avoid OpenSSL errors
+      - run:
+          name: Set NODE_OPTIONS for OpenSSL
+          command: echo "export NODE_OPTIONS=--openssl-legacy-provider" >> $BASH_ENV
+
       - run:
           name: Tag and Push udagram-frontend image
           command: |
