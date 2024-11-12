@@ -3,7 +3,7 @@ version: 2.1
 executors:
   docker-executor:
     docker:
-      - image: circleci/node:18  # Base image for running Docker commands
+      - image: node:18  # Node.js 18 image (includes npm)
     working_directory: ~/repo
 
 jobs:
