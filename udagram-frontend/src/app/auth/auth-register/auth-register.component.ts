@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { AuthService } from '../services/auth.service';
 import { User } from '../models/user.model';
-import { ModalController } from '@ionic/angular';
+import { ModalController, LoadingController } from '@ionic/angular';
 
 @Component({
   selector: 'app-auth-register',
@@ -17,7 +17,8 @@ export class AuthRegisterComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private auth: AuthService,
-    private modal: ModalController
+    private modal: ModalController,
+    private loadingController: LoadingController
   ) { }
 
   ngOnInit() {
@@ -35,7 +36,7 @@ export class AuthRegisterComponent implements OnInit {
     }, { validators: this.passwordsMatch });
   }
 
-  onSubmit($event) {
+  async onSubmit($event) {
     $event.preventDefault();
 
     if (!this.registerForm.valid) { return; }
@@ -45,14 +46,23 @@ export class AuthRegisterComponent implements OnInit {
       name: this.registerForm.controls.name.value
     };
 
-    this.auth.register(newuser, this.registerForm.controls.password.value)
-              .then((user) => {
-                this.modal.dismiss();
-              })
-             .catch((e) => {
-              this.error = e.statusText;
-              throw e;
-             });
+    // Show loading spinner before the registration request
+    const loading = await this.loadingController.create({
+      message: 'Registering...',
+      spinner: 'circles',
+    });
+
+    await loading.present();  // Show the loading spinner
+
+    try {
+      await this.auth.register(newuser, this.registerForm.controls.password.value);
+      await loading.dismiss();
+      this.modal.dismiss();  // Close the modal after successful registration
+    } catch (e) {
+      await loading.dismiss();  // Dismiss the spinner in case of error
+      this.error = e.statusText || 'An error occurred. Please try again.';  // Show error message
+      console.error('Registration failed:', e);
+    }
   }
 
   passwordsMatch(group: FormGroup) {

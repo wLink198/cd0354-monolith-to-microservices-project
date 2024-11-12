@@ -1,0 +1,59 @@
+version: 2.1
+
+executors:
+  docker-executor:
+    docker:
+      - image: circleci/python:3.8  # Base image for running Docker commands
+    working_directory: ~/repo
+
+jobs:
+  build_and_push:
+    executor: docker-executor
+    steps:
+      - checkout  # Checkout the code from the repository
+      - setup_remote_docker:
+          version: 20.10.7  # Docker version
+          docker_layer_caching: true  # Enable Docker layer caching for faster builds
+
+      # Log into Docker Hub
+      - run:
+          name: Log into Docker Hub
+          command: |
+            echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+
+      # Build images with docker-compose-build.yml
+      - run:
+          name: Build images using docker-compose
+          command: |
+            docker-compose -f docker-compose-build.yml build
+
+      # Tag and push each image to Docker Hub
+      - run:
+          name: Tag and Push reverseproxy image
+          command: |
+            docker tag reverseproxy "$DOCKER_USERNAME/reverseproxy:v1"
+            docker push "$DOCKER_USERNAME/reverseproxy:v1"
+
+      - run:
+          name: Tag and Push udagram-api-user image
+          command: |
+            docker tag udagram-api-user "$DOCKER_USERNAME/udagram-api-user:v1"
+            docker push "$DOCKER_USERNAME/udagram-api-user:v1"
+
+      - run:
+          name: Tag and Push udagram-api-feed image
+          command: |
+            docker tag udagram-api-feed "$DOCKER_USERNAME/udagram-api-feed:v1"
+            docker push "$DOCKER_USERNAME/udagram-api-feed:v1"
+
+      - run:
+          name: Tag and Push udagram-frontend image
+          command: |
+            docker tag udagram-frontend:local "$DOCKER_USERNAME/udagram-frontend:v1"
+            docker push "$DOCKER_USERNAME/udagram-frontend:v1"
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build_and_push

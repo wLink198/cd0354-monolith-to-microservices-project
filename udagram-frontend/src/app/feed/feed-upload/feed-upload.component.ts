@@ -30,7 +30,7 @@ export class FeedUploadComponent implements OnInit {
   }
 
   setPreviewDataUrl(file: Blob) {
-    const reader  = new FileReader();
+    const reader = new FileReader();
     reader.onloadend = () => {
       this.previewDataUrl = reader.result;
     };
@@ -49,9 +49,14 @@ export class FeedUploadComponent implements OnInit {
 
   }
 
-  onSubmit($event) {
+  async onSubmit($event) {
     $event.preventDefault();
-    this.loadingController.create();
+    const loading = await this.loadingController.create({
+      message: 'Uploading...',
+      spinner: 'circles',
+    });
+
+    await loading.present();  // Show the loading spinner
 
     if (!this.uploadForm.valid || !this.file) { return; }
     this.feed.uploadFeedItem(this.uploadForm.controls.caption.value, this.file)
