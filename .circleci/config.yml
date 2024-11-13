@@ -20,36 +20,51 @@ jobs:
           command: |
             echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
-      # Build images with docker-compose-build.yml
+      # Build images with docker-compose
       - run:
           name: Build images using docker-compose
           command: |
             docker-compose -f docker-compose-build.yaml build
 
-      # Tag and push each image to Docker Hub
+      # Tag images with commit hash (or Git tag)
       - run:
           name: Tag and Push reverseproxy image
           command: |
-            docker tag reverseproxy "$DOCKER_USERNAME/reverseproxy:v1"
-            docker push "$DOCKER_USERNAME/reverseproxy:v1"
+            IMAGE_TAG="$DOCKER_USERNAME/reverseproxy:${CIRCLE_SHA1}"  # Unique version tag
+            docker tag reverseproxy "$IMAGE_TAG"
+            docker push "$IMAGE_TAG"
 
       - run:
           name: Tag and Push udagram-api-user image
           command: |
-            docker tag udagram-api-user "$DOCKER_USERNAME/udagram-api-user:v1"
-            docker push "$DOCKER_USERNAME/udagram-api-user:v1"
+            IMAGE_TAG="$DOCKER_USERNAME/udagram-api-user:${CIRCLE_SHA1}"  # Unique version tag
+            docker tag udagram-api-user "$IMAGE_TAG"
+            docker push "$IMAGE_TAG"
 
       - run:
           name: Tag and Push udagram-api-feed image
           command: |
-            docker tag udagram-api-feed "$DOCKER_USERNAME/udagram-api-feed:v1"
-            docker push "$DOCKER_USERNAME/udagram-api-feed:v1"
+            IMAGE_TAG="$DOCKER_USERNAME/udagram-api-feed:${CIRCLE_SHA1}"  # Unique version tag
+            docker tag udagram-api-feed "$IMAGE_TAG"
+            docker push "$IMAGE_TAG"
 
       - run:
           name: Tag and Push udagram-frontend image
           command: |
-            docker tag udagram-frontend:local "$DOCKER_USERNAME/udagram-frontend:v1"
-            docker push "$DOCKER_USERNAME/udagram-frontend:v1"
+            IMAGE_TAG="$DOCKER_USERNAME/udagram-frontend:${CIRCLE_SHA1}"  # Unique version tag
+            docker tag udagram-frontend:local "$IMAGE_TAG"
+            docker push "$IMAGE_TAG"
+
+      # Optionally, tag the latest version as 'latest' (for the most recent image)
+      - run:
+          name: Tag and Push 'latest' image
+          command: |
+            docker tag "$DOCKER_USERNAME/udagram-api-user:${CIRCLE_SHA1}" "$DOCKER_USERNAME/udagram-api-user:latest"
+            docker push "$DOCKER_USERNAME/udagram-api-user:latest"
+            docker tag "$DOCKER_USERNAME/udagram-api-feed:${CIRCLE_SHA1}" "$DOCKER_USERNAME/udagram-api-feed:latest"
+            docker push "$DOCKER_USERNAME/udagram-api-feed:latest"
+            docker tag "$DOCKER_USERNAME/udagram-frontend:${CIRCLE_SHA1}" "$DOCKER_USERNAME/udagram-frontend:latest"
+            docker push "$DOCKER_USERNAME/udagram-frontend:latest"
 
 workflows:
   version: 2
