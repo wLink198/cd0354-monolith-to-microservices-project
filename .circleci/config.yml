@@ -65,6 +65,8 @@ jobs:
             docker push "$DOCKER_USERNAME/udagram-api-feed:latest"
             docker tag "$DOCKER_USERNAME/udagram-frontend:${CIRCLE_SHA1}" "$DOCKER_USERNAME/udagram-frontend:latest"
             docker push "$DOCKER_USERNAME/udagram-frontend:latest"
+            docker tag "$DOCKER_USERNAME/reverseproxy:${CIRCLE_SHA1}" "$DOCKER_USERNAME/reverseproxy:latest"
+            docker push "$DOCKER_USERNAME/reverseproxy:latest"
 
 workflows:
   version: 2
