@@ -41,7 +41,7 @@ export class AuthMenuButtonComponent implements OnInit {
 
   logout() {
     this.auth.logout();
-    window.location.reload();
+    location.href = window.location.origin
   }
 
   ngOnInit() { }

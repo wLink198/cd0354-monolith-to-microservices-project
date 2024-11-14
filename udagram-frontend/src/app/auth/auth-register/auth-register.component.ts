@@ -58,7 +58,7 @@ export class AuthRegisterComponent implements OnInit {
       await this.auth.register(newuser, this.registerForm.controls.password.value);
       await loading.dismiss();
       this.modal.dismiss();  // Close the modal after successful registration
-      window.location.reload();
+      location.href = window.location.origin
     } catch (e) {
       await loading.dismiss();  // Dismiss the spinner in case of error
       this.error = e.statusText || 'An error occurred. Please try again.';  // Show error message

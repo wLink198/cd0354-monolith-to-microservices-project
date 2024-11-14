@@ -49,7 +49,7 @@ export class AuthLoginComponent implements OnInit {
       await this.auth.login(this.loginForm.controls.email.value, this.loginForm.controls.password.value)
       await loading.dismiss();
       this.modal.dismiss();  // Close the modal after successful login
-      window.location.reload();
+      location.href = window.location.origin
     } catch (e) {
       await loading.dismiss();  // Dismiss the spinner in case of error
       this.error = e.statusText || 'An error occurred. Please try again.';  // Show error message
