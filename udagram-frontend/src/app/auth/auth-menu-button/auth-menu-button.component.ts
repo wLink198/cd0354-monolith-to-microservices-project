@@ -16,7 +16,7 @@ export class AuthMenuButtonComponent implements OnInit {
   constructor(
     private auth: AuthService,
     public modalController: ModalController
-    ) {}
+  ) { }
 
   async presentmodal(ev: any) {
     const modal = await this.modalController.create({
@@ -41,8 +41,9 @@ export class AuthMenuButtonComponent implements OnInit {
 
   logout() {
     this.auth.logout();
+    window.location.reload();
   }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
 }
