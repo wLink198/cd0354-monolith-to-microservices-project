@@ -13,13 +13,7 @@ export class FeedProviderService {
   constructor(private api: ApiService) { }
 
   async getFeed(): Promise<BehaviorSubject<FeedItem[]>> {
-    let req: any;
-    try {
-      req = await this.api.get('/feed');
-    } catch (error) {
-      console.log(error);
-    }
-
+    const req = await this.api.get('/feed');
     const items = <FeedItem[]>req.rows;
     this.currentFeed$.next(items);
     return Promise.resolve(this.currentFeed$);
