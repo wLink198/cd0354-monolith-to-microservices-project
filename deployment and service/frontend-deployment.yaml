@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+        - name: frontend
+          image: wlink69/udagram-frontend
+          ports:
+            - containerPort: 80
+          env:
+            - name: URL
+              valueFrom:
+                configMapKeyRef:
+                  name: env-configmap
+                  key: URL
+

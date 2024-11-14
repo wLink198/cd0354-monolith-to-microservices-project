@@ -1,0 +1,20 @@
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: backend-user-hpa
+  namespace: default
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: backend-user
+  minReplicas: 2         # Minimum number of replicas
+  maxReplicas: 3         # Maximum number of replicas
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu        # Use CPU as the resource to scale
+        target:
+          type: Utilization    # Correct type for scaling based on CPU utilization
+          averageUtilization: 50  # Target 50% CPU utilization
+

@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reverseproxy
+  labels:
+    app: reverseproxy
+spec:
+  replicas: 2  # Number of pod replicas (adjust as necessary)
+  selector:
+    matchLabels:
+      app: reverseproxy
+  template:
+    metadata:
+      labels:
+        app: reverseproxy
+    spec:
+      containers:
+        - name: reverseproxy
+          image: wlink69/reverseproxy:latest  # Always use the latest image tag
+          ports:
+            - containerPort: 8080  # Expose port 8080 for the reverse proxy
+
